@@ -1,5 +1,7 @@
 const handlebars = require('express-handlebars');
 const express = require('express');
+const path = require('path');
+//const conf = require('conf');
 const handlebars_inst = handlebars.create({
     extname: '.handlebars',
     compilerOptions: {
@@ -8,26 +10,26 @@ const handlebars_inst = handlebars.create({
     layoutsDir: path.join(__dirname, 'views', 'layouts'),
     partialsDir: path.join(__dirname, 'views', 'partials')
 });
-const path = require('path');
-const conf = require('conf');
+const app = express();
 app.engine('handlebars', handlebars_inst.engine);
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views', 'pages'));
 // create our express app
-const app = express();
+
 // create our data store for user information
-const data = new conf();
+//const data = new conf();
 app.use(express.json());
 app.use(express.urlencoded({
  extended: false
 }));
 app.route('/login')
-    get((req, res) => {
+    .get((req, res) => {
         res.render('login', {
             field: 'value'
         })
     })
-.post((req, res) => {
+app.post((req, res) => {
+    res.send('post request')
 // some debug info
 console.log(req.body);
 document.getElementByID("login").submit();
