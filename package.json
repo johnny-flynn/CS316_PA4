@@ -1,0 +1,19 @@
+{
+  "name": "cs316_pa4",
+  "version": "1.0.0",
+  "description": "PA 4",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johnny-flynn/CS316_PA4.git"
+  },
+  "author": "Stefan Ignat, Jhon Flynn",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/johnny-flynn/CS316_PA4/issues"
+  },
+  "homepage": "https://github.com/johnny-flynn/CS316_PA4#readme"
+}
