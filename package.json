@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/johnny-flynn/CS316_PA4/issues"
   },
-  "homepage": "https://github.com/johnny-flynn/CS316_PA4#readme"
+  "homepage": "https://github.com/johnny-flynn/CS316_PA4#readme",
+  "dependencies": {
+    "conf": "^6.2.4"
+  }
 }
