@@ -48,6 +48,12 @@ app.use(express.json());
 app.use(express.urlencoded({
  extended: false
 }));
+app.get('/login', function (req, res) {
+    res.status(200).render('login')
+  })
+app.get('/new', function (req, res) {
+    res.status(200).render('new')
+  })
 app.route('/new')
     .get((req,res) =>{
         res.status(200).sendFile(path.join(__dirname, 'new.html'));
