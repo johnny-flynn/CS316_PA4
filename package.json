@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/johnny-flynn/CS316_PA4#readme",
   "dependencies": {
-    "conf": "^6.2.4"
+    "conf": "^6.2.4",
+    "uuid": "^7.0.3"
   }
 }

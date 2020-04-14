@@ -37,16 +37,30 @@ app.set('views', path.join(__dirname, 'views', 'pages'));
 
 // create our data store for user information
 const data = new conf(users);
+data.set('username', 'test')
+data.set('password', 'test')
 app.use(express.json());
 app.use(express.urlencoded({
  extended: false
 }));
+app.route('/new')
+    .get((req,res) =>{
+        res.render('new')
+    })
+    app.route('/user')
+    .get((req,res) =>{
+        res.render('user')
+    })
 app.route('/login')
     .get((req, res) => {
-        res.sendFile(path.join(__dirname, 'login.html'));
-            //field: 'value'
-        })
-    //})
+        res.render('login')
+    })
+
+app.route('/user/:user_id')
+    .get((req, res) => {
+        res.send(req.params.user_id);
+    })
+
 app.post((req, res) => {
     res.send('post request')
 // some debug info
