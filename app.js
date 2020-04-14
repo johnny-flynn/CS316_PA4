@@ -24,15 +24,15 @@ app.use(express.urlencoded({
 }));
 app.route('/login')
     .get((req, res) => {
-        res.render('login', {
-            field: 'value'
+        res.sendFile(path.join(__dirname, 'login.html'));
+            //field: 'value'
         })
-    })
+    //})
 app.post((req, res) => {
     res.send('post request')
 // some debug info
 console.log(req.body);
-document.getElementByID("login").submit();
+//document.getElementByID("login").submit();
 });
 app.listen(3000, () => {
 console.log('express app running at http://localhost:3000/')
