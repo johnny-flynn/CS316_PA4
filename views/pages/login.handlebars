@@ -1,3 +1,9 @@
+<div class="alert alert-danger" role="alert" {{#unless login}} style="display: none" {{/unless}}>
+    Incorrect email/password!
+</div>
+<div class="alert alert-success" role="alert" {{#unless usercreated}} style="display: none" {{/unless}}>
+    User created!
+</div>
 <div class="main">
             <div class="col-md-6 col-sm-12">
                <div class="login-form">

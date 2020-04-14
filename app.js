@@ -2,8 +2,12 @@ const handlebars = require('express-handlebars');
 const express = require('express');
 const path = require('path');
 const conf = require('conf');
+var flash = require('connect-flash');
+var session = require('express-session');
+var cookieParser = require('cookie-parser');
+const uuidv4 = require('uuid/v4');
 
-/*const users = {
+const users = {
     username: {
         type: 'string'
     },
@@ -15,8 +19,11 @@ const conf = require('conf');
     },
     phone: {
         type: 'number'
+    },
+    id: {
+        type: 'string'
     }
-};*/
+};
 
 const handlebars_inst = handlebars.create({
     extname: '.handlebars',
@@ -27,16 +34,15 @@ const handlebars_inst = handlebars.create({
     partialsDir: path.join(__dirname, 'views', 'partials')
 });
 const app = express();
+app.use(cookieParser('secret'));
+app.use(session({ secret: 'secret' }));
+app.use(flash());
 app.engine('handlebars', handlebars_inst.engine);
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views', 'pages'));
-// create our express app
 
 // create our data store for user information
-const data = new conf();
-//data.set('email', 'test')
-//data.set('username', 'test')
-//data.set('password', 'test')
+const data = new conf(users);
 console.log(data.store)
 app.use(express.json());
 app.use(express.urlencoded({
@@ -49,22 +55,42 @@ app.route('/new')
     .post((req, res) => {
        console.log(req.body); 
 
-       const user = data.get(req.body.email);
+       const email = data.get(req.body.email);
+       const username = data.get(req.body.name);
 
        //Check that passwords match
        if (req.body.password !== req.body.verified_password) {
-        res.json({
-            message: 'passwords do not match'
-        })
-        res.status(406).redirect('/new')
+           //req.flash("messages", { "error" : "Passwords do not match" });
+           //res.locals.messages = req.flash();
+           res.status(406).render('new', {
+               passmatch: {
+                   level: 'warning',
+                   title: '406',
+                   message: 'Passwords do not match'
+               }
+           })
     }
        //Check if user already exists
-       else if (user !== undefined){
-           res.json({
-               message: 'User already exisits'
+       else if (email !== undefined){
+           res.status(406).render('new', {
+               emailuse: {
+                   level: 'warning',
+                   title: '406',
+                   message: 'Email already in use!'
+               }
            })
-           res.status(406).redirect('/new')
        }
+
+       //Check if user already exists
+       else if (username !== undefined){
+            res.status(406).render('new', {
+                userexists: {
+                    level: 'warning',
+                    title: '406',
+                    message: 'User already exists!'
+                }
+            })
+        }       
 
        //send success
        else {
@@ -73,20 +99,30 @@ app.route('/new')
                username: req.body.name,
                email: req.body.email,
                password: req.body.password,
-               phone: req.body.phone
+               phone: req.body.phone,
+               id: uuidv4()
            })
            //res.json({
            //    message: 'success!'
            //})
-           res.status(201).redirect('/login')
+           res.status(201).render('login', {
+            usercreated: {
+                level: 'warning',
+                title: '201',
+                message: 'User created!'
+            }
+        })
        }
     })
 
 
 app.route('/user')
-    .get((req,res) =>{
-        res.render('user')
-    })
+    .get((req, res) => {
+        res.status(404).json({
+            message: '404 page does not exist'
+        })
+    });
+
 app.route('/login')
     .get((req, res) => {
         res.status(200).sendFile(path.join(__dirname, 'login.html'));
@@ -96,17 +132,26 @@ app.route('/login')
         console.log(user);
         //check that user exists
         if (user === undefined || user.password !== req.body.password) {
-            res.json({
-                message: 'email/password pair not found'
+            res.status(401).render('login', {
+                login: {
+                    level: 'danger',
+                    title: '401',
+                    message: 'Incorrect email/password!'
+                }
             })
         }
         //User exists
-        else res.status(202).redirect('/user/')
+        else res.status(202).redirect(`/user/${user.id}`)
     });
 
-app.route('/user/:email')
+/*app.route('/user/:user_username')
     .get((req, res) => {
-        res.send(req.params.email);
+        res.send(req.params.username);
+    })
+    */
+app.route('/user/:user_id')
+    .get((req,res) =>{
+        res.render('user')
     })
 app.post((req, res) => {
     res.send('post request')
