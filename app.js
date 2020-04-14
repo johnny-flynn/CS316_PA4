@@ -2,6 +2,25 @@ const handlebars = require('express-handlebars');
 const express = require('express');
 const path = require('path');
 const conf = require('conf');
+
+const users = {
+    username: {
+        type: 'string'
+    },
+    email: {
+        type: 'string'
+    },
+    password: {
+        type: 'string'
+    },
+    verified_password: {
+        type: 'string'
+    },
+    phone: {
+        type: 'number'
+    }
+};
+
 const handlebars_inst = handlebars.create({
     extname: '.handlebars',
     compilerOptions: {
@@ -17,7 +36,7 @@ app.set('views', path.join(__dirname, 'views', 'pages'));
 // create our express app
 
 // create our data store for user information
-const data = new conf();
+const data = new conf(users);
 app.use(express.json());
 app.use(express.urlencoded({
  extended: false
