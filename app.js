@@ -151,7 +151,7 @@ app.route('/login')
     */
 app.route('/user/:user_id')
     .get((req,res) =>{
-        res.render('user')
+        res.status(202).render('user')
     })
 app.post((req, res) => {
     res.send('post request')
