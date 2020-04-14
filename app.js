@@ -3,7 +3,7 @@ const express = require('express');
 const path = require('path');
 const conf = require('conf');
 
-const users = {
+/*const users = {
     username: {
         type: 'string'
     },
@@ -16,7 +16,7 @@ const users = {
     phone: {
         type: 'number'
     }
-};
+};*/
 
 const handlebars_inst = handlebars.create({
     extname: '.handlebars',
@@ -33,10 +33,11 @@ app.set('views', path.join(__dirname, 'views', 'pages'));
 // create our express app
 
 // create our data store for user information
-const data = new conf(users);
-data.set('email', 'test')
-data.set('username', 'test')
-data.set('password', 'test')
+const data = new conf();
+//data.set('email', 'test')
+//data.set('username', 'test')
+//data.set('password', 'test')
+console.log(data.store)
 app.use(express.json());
 app.use(express.urlencoded({
  extended: false
@@ -66,9 +67,11 @@ app.route('/new')
        //send success
        else {
            //add user to store
-           data.set(req.body.email)({
+           data.set(req.body.email, {
+               username: req.body.name,
                email: req.body.email,
-               password: req.body.password
+               password: req.body.password,
+               phone: req.body.phone
            })
            res.json({
                message: 'success!'
