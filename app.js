@@ -34,7 +34,6 @@ app.set('views', path.join(__dirname, 'views', 'pages'));
 
 // create our data store for user information
 const data = new conf(users);
-data.clear();
 data.set('email', 'test')
 data.set('username', 'test')
 data.set('password', 'test')
