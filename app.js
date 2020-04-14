@@ -44,7 +44,7 @@ app.use(express.urlencoded({
 }));
 app.route('/new')
     .get((req,res) =>{
-        res.sendFile(path.join(__dirname, 'new.html'));
+        res.status(200).sendFile(path.join(__dirname, 'new.html'));
     })
     .post((req, res) => {
        console.log(req.body); 
@@ -56,12 +56,14 @@ app.route('/new')
         res.json({
             message: 'passwords do not match'
         })
+        res.status(406).redirect('/new')
     }
        //Check if user already exists
        else if (user !== undefined){
            res.json({
                message: 'User already exisits'
            })
+           res.status(406).redirect('/new')
        }
 
        //send success
@@ -73,9 +75,10 @@ app.route('/new')
                password: req.body.password,
                phone: req.body.phone
            })
-           res.json({
-               message: 'success!'
-           })
+           //res.json({
+           //    message: 'success!'
+           //})
+           res.status(201).redirect('/login')
        }
     })
 
@@ -98,14 +101,12 @@ app.route('/login')
             })
         }
         //User exists
-        else res.json({
-            message: 'success!'
-        })
+        else res.status(202).redirect('/user/')
     });
 
-app.route('/user/:user_id')
+app.route('/user/:email')
     .get((req, res) => {
-        res.send(req.params.user_id);
+        res.send(req.params.email);
     })
 app.post((req, res) => {
     res.send('post request')
