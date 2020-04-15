@@ -7,6 +7,7 @@ var session = require('express-session');
 var cookieParser = require('cookie-parser');
 const uuidv4 = require('uuid/v4');
 
+
 const users = {
     username: {
         type: 'string'
@@ -66,8 +67,6 @@ app.route('/new')
 
        //Check that passwords match
        if (req.body.password !== req.body.verified_password) {
-           //req.flash("messages", { "error" : "Passwords do not match" });
-           //res.locals.messages = req.flash();
            res.status(406).render('new', {
                passmatch: {
                    level: 'warning',
@@ -100,24 +99,17 @@ app.route('/new')
 
        //send success
        else {
+           newuser = uuidv4();
            //add user to store
-           data.set(req.body.email, {
+           data.set(newuser, {
                username: req.body.name,
                email: req.body.email,
                password: req.body.password,
                phone: req.body.phone,
-               id: uuidv4()
+               id: newuser
            })
-           //res.json({
-           //    message: 'success!'
-           //})
-           res.status(201).render('login', {
-            usercreated: {
-                level: 'warning',
-                title: '201',
-                message: 'User created!'
-            }
-        })
+
+           res.status(201).redirect('login')
        }
     })
 
@@ -134,7 +126,9 @@ app.route('/login')
         res.status(200).sendFile(path.join(__dirname, 'login.html'));
     })
     .post((req, res) => {
-        const user = data.get(req.body.email);
+        allusers = Object.values(data.store);
+        console.log('store', Object.values(data.store));
+        const user = allusers.find(user => user.email === req.body.email)
         console.log(user);
         //check that user exists
         if (user === undefined || user.password !== req.body.password) {
@@ -150,20 +144,36 @@ app.route('/login')
         else res.status(202).redirect(`/user/${user.id}`)
     });
 
-/*app.route('/user/:user_username')
-    .get((req, res) => {
-        res.send(req.params.username);
-    })
-    */
 app.route('/user/:user_id')
     .get((req,res) =>{
-        res.status(202).render('user')
+        const user = data.get(req.params.user_id)
+        res.status(202).render('user', {
+            name: user.username,
+            email: user.email,
+            phone: user.phone,
+            updated: true
+        })
     })
+    .post((req, res) => {
+        console.log(req.body); 
+ 
+        const user = data.get(req.params.user_id);
+        grabemail = user.email
+        const email = data.get(grabemail);
+ 
+            //add user to store
+            data.set(req.params.user_id, {
+                username: req.body.name,
+                email: req.body.email,
+                password: user.password,
+                phone: req.body.phone,
+                id: req.params.user_id
+            })
+        });
 app.post((req, res) => {
     res.send('post request')
 // some debug info
 console.log(req.body);
-//document.getElementByID("login").submit();
 });
 app.listen(3000, () => {
 console.log('express app running at http://localhost:3000/')
