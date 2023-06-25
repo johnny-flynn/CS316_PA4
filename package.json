@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/johnny-flynn/CS316_PA4#readme",
   "dependencies": {
-    "conf": "^6.2.4",
+    "conf": "^11.0.1",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.5",
     "express-flash": "0.0.2",
